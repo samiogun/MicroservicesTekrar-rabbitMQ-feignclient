@@ -1,0 +1,11 @@
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+
+      userservicefeignflient:
+        connectTimeout: 10000
+        loggerLevel: BASIC
+        readTimeout: 10000
