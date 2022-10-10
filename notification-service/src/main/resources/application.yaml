@@ -13,12 +13,11 @@ spring:
 
   cloud:
     function:
-      definition:
-        sendNotification
+      definition: sendNotification
     stream:
       rabbit:
         bindings:
-          sendNotification-in-0:
+          sendNotification-in-0:    # Sadece consumer fonksiyonu belirttiğimiz için methos isminden sonra in kullanıyoruz. Örneğin Function methodunu yazmış olsaydık hem in hem out olarak kullanacaktık.
             consumer:
               bindingRoutingKey: order-service-to-notification-service
       bindings:
