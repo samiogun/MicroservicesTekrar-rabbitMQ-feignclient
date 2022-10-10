@@ -5,6 +5,24 @@ spring:
   application:
     name: order-service
 
+  rabbitmq:  # Burada rabbitmq ile ilgili konfigürasyonları giriyoruz. Host, port, kullanıcı adı ve şifre. Bağlantı kurmak için.
+    username: ersun
+    password: ersun
+    port: 2222
+    host: localhost
+
+  cloud:
+    stream:
+      bindings:   # Binding dediğimiz şey exhange ile kuyruğun bağlanmasını konfigüre ettiğimiz bağ demek.
+        output:   # Keyfi bir isim verdik. Fakat fonksiyonlarımızda kullandığımız StreamBridge içinde bu binding ile kuyruğa mesaj yazabiliriz.
+          group: order-service-write-to-notification-queue    # Aynı kuyruğa birden fazla instance yazabilir. O nedenle aynı grub ismine sahip producerlar aynı kuyruğa ya da exchange'e yazabilirler.
+          destination: sira   # Hedef exchange imizin adı.
+      rabbit:
+        bindings:
+          output:
+            producer:
+              routingKeyExpression: "'order-service-to-notification-service'"
+
   h2:
     console:
       enabled: true
