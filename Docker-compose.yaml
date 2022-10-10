@@ -1,0 +1,10 @@
+services:
+  rabbit:
+    image: rabbitmq:3.10-management
+    container_name: rabbitmq
+    ports:
+      - 2222:5672
+      - 22222:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ersun
+      RABBITMQ_DEFAULT_PASS: ersun

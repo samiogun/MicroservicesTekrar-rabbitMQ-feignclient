@@ -1,0 +1,32 @@
+server:
+  port: 5555
+
+spring:
+  application:
+    name: notification-service
+
+  rabbitmq:
+    username: ersun
+    password: ersun
+    host: localhost
+    port: 2222
+
+  cloud:
+    function:
+      definition:
+        sendNotification
+    stream:
+      rabbit:
+        bindings:
+          dfsadfdsaf:
+            consumer:
+              bindingRoutingKey: order-service-to-notification-service
+      bindings:
+        dfsadfdsaf:
+          destination: sira
+          group: read-from-notification-queue
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:11111/eureka

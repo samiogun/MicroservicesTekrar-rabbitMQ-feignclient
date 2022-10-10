@@ -3,12 +3,10 @@ package org.ersun.service;
 import lombok.RequiredArgsConstructor;
 import org.ersun.client.AccountServiceClient;
 import org.ersun.dto.OrderDto;
-import org.ersun.model.AccountDto;
-import org.ersun.model.AddressDto;
-import org.ersun.model.Order;
-import org.ersun.model.OrderStatus;
+import org.ersun.model.*;
 import org.ersun.repository.OrderRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -20,6 +18,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final AccountServiceClient accountServiceClient;
     private final ModelMapper modelMapper;
+    private final StreamBridge streamBridge;
 
     @Override
     public OrderDto submitOrder(OrderDto orderDto) {
@@ -39,8 +38,8 @@ public class OrderServiceImpl implements OrderService {
                 .append(shipmentAddressDto.getDesc())
                 .append(" ")
                 .append(shipmentAddressDto.getDistrict())
-                .append("/")
-                .append(shipmentAddressDto)
+                .append(" / ")
+                .append(shipmentAddressDto.getCity())
                 .toString();
 
         Order order = Order.builder()
@@ -51,9 +50,16 @@ public class OrderServiceImpl implements OrderService {
                 .status(OrderStatus.NEW)
                 .build();
 
-        return modelMapper.map(
-                orderRepository.save(order),
-                OrderDto.class
+        Order orderDb = orderRepository.saveAndFlush(order);
+
+        streamBridge.send("output",
+                NotificationDto.builder()
+                        .orderId(orderDb.getId())
+                        .productName(orderDto.getProductName())
+                        .shipmentAddress(shipmentAddress)
+                        .build()
         );
+
+        return modelMapper.map(orderDb,OrderDto.class);
     }
 }
