@@ -18,11 +18,11 @@ spring:
     stream:
       rabbit:
         bindings:
-          dfsadfdsaf:
+          sendNotification-in-0:
             consumer:
               bindingRoutingKey: order-service-to-notification-service
       bindings:
-        dfsadfdsaf:
+        sendNotification-in-0:
           destination: sira
           group: read-from-notification-queue
 
