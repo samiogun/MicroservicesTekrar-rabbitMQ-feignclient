@@ -14,8 +14,6 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 public class NotificationListener {
 
-    private final AccountServiceClient accountServiceClient;
-
     @Bean
     public Consumer<NotificationDto> sendNotification() {
         return notificationDto -> {
